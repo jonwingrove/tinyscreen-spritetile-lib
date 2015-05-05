@@ -1,11 +1,12 @@
 #pragma once
+#include <avr/pgmspace.h>
 
 class Sprite
 {
   public:
   int width;
   int height;
-  uint8_t* data;
+  const uint8_t* data;
 };
 
 class SpriteInst

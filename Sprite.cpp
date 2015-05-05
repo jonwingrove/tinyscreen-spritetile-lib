@@ -4,11 +4,9 @@
 
 #include "Sprite.h"
 
-
-uint8_t ALPHA = 0xBA;
-
 void drawSprites(SpriteInst* sprites, int numSprites, TileMap8pix *tilemap, uint8_t bgCol, TinyScreen *display)
 {
+  uint8_t ALPHA = 0xBA;
   display->goTo(0,0);
   display->startData();
   
@@ -47,7 +45,8 @@ void drawSprites(SpriteInst* sprites, int numSprites, TileMap8pix *tilemap, uint
         && tileGridX < tilemap->xWidth && tileGridY < tilemap->yHeight && 
             tilemap->tilemap[tileGridX+(tileGridY*tilemap->xWidth)] != 0 )
         {
-          memcpy(lineBuffer+x+thisTileStartX,tilemap->tilemap[tileGridX+(tileGridY*tilemap->xWidth)]->data+ (thisTileStartX+(thisY*8)),thisTileLength);
+//          memcpy(lineBuffer+x+thisTileStartX,tilemap->tilemap[tileGridX+(tileGridY*tilemap->xWidth)]->data+ (thisTileStartX+(thisY*8)),thisTileLength);
+            memcpy_P(lineBuffer+x+thisTileStartX,tilemap->tilemap[tileGridX+(tileGridY*tilemap->xWidth)]->data+ (thisTileStartX+(thisY*8)),thisTileLength);            
         }
         else
         {
@@ -69,7 +68,9 @@ void drawSprites(SpriteInst* sprites, int numSprites, TileMap8pix *tilemap, uint
             int tx = x + sprites[index].x;
             if ( tx >= 0 && tx < 96 )
             {
-              uint8_t col = sprites[index].flip ? spriteType->data[(spriteType->width-(x+1))+(curLine*spriteType->width)] : spriteType->data[x+(curLine*spriteType->width)];
+//              uint8_t col = sprites[index].flip ? spriteType->data[(spriteType->width-(x+1))+(curLine*spriteType->width)] : spriteType->data[x+(curLine*spriteType->width)];
+              int offset = sprites[index].flip ? (spriteType->width-(x+1))+(curLine*spriteType->width) : x+(curLine*spriteType->width);
+              uint8_t col = pgm_read_byte_near(spriteType->data + offset);
               if ( col != ALPHA )
               {
                 lineBuffer[tx] = col;
